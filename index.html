@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🕋 اتجاه القبلة</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: "Tahoma", Arial;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background: rgba(255,255,255,0.1);
+  padding: 25px;
+  border-radius: 20px;
+  text-align: center;
+  width: 320px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+.compass {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  margin: 20px auto;
+}
+
+.arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 90px solid #ffd700;
+  top: 20px;
+  left: 50%;
+  transform-origin: bottom center;
+  transform: translateX(-50%) rotate(0deg);
+}
+
+.kaaba {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 22px;
+}
+
+button {
+  background: #ffd700;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background: #ffcc00;
+}
+
+.info {
+  margin-top: 15px;
+  font-size: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>🕋 اتجاه القبلة</h1>
+  <p>اضغط لتحديد اتجاه القبلة</p>
+
+  <div class="compass">
+    <div class="arrow" id="arrow"></div>
+    <div class="kaaba">🕋</div>
+  </div>
+
+  <button onclick="getLocation()">تحديد القبلة</button>
+  <div class="info" id="info"></div>
+</div>
+
+<script>
+const kaabaLat = 21.4225;
+const kaabaLon = 39.8262;
+
+function getQiblaDirection(lat, lon) {
+  const lat1 = lat * Math.PI / 180;
+  const lon1 = lon * Math.PI / 180;
+  const lat2 = kaabaLat * Math.PI / 180;
+  const lon2 = kaabaLon * Math.PI / 180;
+
+  const dLon = lon2 - lon1;
+  const y = Math.sin(dLon);
+  const x = Math.cos(lat1) * Math.tan(lat2) -
+            Math.sin(lat1) * Math.cos(dLon);
+
+  let bearing = Math.atan2(y, x) * 180 / Math.PI;
+  return (bearing + 360) % 360;
+}
+
+function getLocation() {
+  if (!navigator.geolocation) {
+    alert("المتصفح لا يدعم تحديد الموقع");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(position => {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+
+    const qibla = getQiblaDirection(lat, lon);
+    document.getElementById("arrow").style.transform =
+      `translateX(-50%) rotate(${qibla}deg)`;
+
+    document.getElementById("info").innerHTML =
+      `زاوية القبلة: <b>${qibla.toFixed(1)}°</b>`;
+  }, () => {
+    alert("يرجى السماح بتحديد الموقع");
+  });
+}
+</script>
+
+</body>
+</html>
