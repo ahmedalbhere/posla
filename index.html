@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🕋 اتجاه القبلة</title>
+<title>🕋 بوصلة القبلة</title>
 
 <style>
 body {
   margin: 0;
-  font-family: "Tahoma", Arial;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  color: #fff;
+  font-family: Tahoma, Arial;
+  background: radial-gradient(circle, #1c3b4a, #0f2027);
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,54 +20,54 @@ body {
 .container {
   background: rgba(255,255,255,0.1);
   padding: 25px;
-  border-radius: 20px;
+  border-radius: 22px;
+  width: 330px;
   text-align: center;
-  width: 320px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
 h1 {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .compass {
   position: relative;
-  width: 220px;
-  height: 220px;
+  width: 240px;
+  height: 240px;
   border-radius: 50%;
-  border: 4px solid #fff;
-  margin: 20px auto;
+  border: 4px solid rgba(255,255,255,0.8);
+  margin: 25px auto;
 }
 
 .arrow {
   position: absolute;
   width: 0;
   height: 0;
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-bottom: 90px solid #ffd700;
-  top: 20px;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-bottom: 100px solid #ffd700;
+  top: 15px;
   left: 50%;
   transform-origin: bottom center;
   transform: translateX(-50%) rotate(0deg);
+  transition: transform 0.1s linear;
 }
 
-.kaaba {
+.center {
   position: absolute;
-  bottom: 10px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  font-size: 22px;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
 }
 
 button {
   background: #ffd700;
   border: none;
-  padding: 12px 20px;
-  border-radius: 25px;
+  padding: 12px 22px;
+  border-radius: 30px;
   font-size: 16px;
   cursor: pointer;
-  margin-top: 10px;
 }
 
 button:hover {
@@ -84,23 +84,25 @@ button:hover {
 <body>
 
 <div class="container">
-  <h1>🕋 اتجاه القبلة</h1>
-  <p>اضغط لتحديد اتجاه القبلة</p>
+  <h1>🕋 بوصلة القبلة</h1>
+  <p>حرّك هاتفك لتحديد القبلة</p>
 
   <div class="compass">
     <div class="arrow" id="arrow"></div>
-    <div class="kaaba">🕋</div>
+    <div class="center">🕋</div>
   </div>
 
-  <button onclick="getLocation()">تحديد القبلة</button>
+  <button onclick="startQibla()">تشغيل البوصلة</button>
   <div class="info" id="info"></div>
 </div>
 
 <script>
 const kaabaLat = 21.4225;
 const kaabaLon = 39.8262;
+let qiblaDirection = 0;
 
-function getQiblaDirection(lat, lon) {
+// حساب اتجاه القبلة
+function calculateQibla(lat, lon) {
   const lat1 = lat * Math.PI / 180;
   const lon1 = lon * Math.PI / 180;
   const lat2 = kaabaLat * Math.PI / 180;
@@ -115,25 +117,58 @@ function getQiblaDirection(lat, lon) {
   return (bearing + 360) % 360;
 }
 
-function getLocation() {
+function startQibla() {
   if (!navigator.geolocation) {
-    alert("المتصفح لا يدعم تحديد الموقع");
+    alert("المتصفح لا يدعم GPS");
     return;
   }
 
-  navigator.geolocation.getCurrentPosition(position => {
-    const lat = position.coords.latitude;
-    const lon = position.coords.longitude;
-
-    const qibla = getQiblaDirection(lat, lon);
-    document.getElementById("arrow").style.transform =
-      `translateX(-50%) rotate(${qibla}deg)`;
+  navigator.geolocation.getCurrentPosition(pos => {
+    qiblaDirection = calculateQibla(
+      pos.coords.latitude,
+      pos.coords.longitude
+    );
 
     document.getElementById("info").innerHTML =
-      `زاوية القبلة: <b>${qibla.toFixed(1)}°</b>`;
+      `اتجاه القبلة: <b>${qiblaDirection.toFixed(1)}°</b>`;
+
+    startCompass();
   }, () => {
     alert("يرجى السماح بتحديد الموقع");
   });
+}
+
+// تشغيل البوصلة الحقيقية
+function startCompass() {
+  if (typeof DeviceOrientationEvent !== "undefined" &&
+      typeof DeviceOrientationEvent.requestPermission === "function") {
+    DeviceOrientationEvent.requestPermission()
+      .then(response => {
+        if (response === "granted") {
+          window.addEventListener("deviceorientation", handleOrientation);
+        } else {
+          alert("تم رفض إذن البوصلة");
+        }
+      });
+  } else {
+    window.addEventListener("deviceorientationabsolute", handleOrientation, true);
+    window.addEventListener("deviceorientation", handleOrientation, true);
+  }
+}
+
+// تحديث السهم حسب اتجاه الهاتف
+function handleOrientation(event) {
+  let alpha = event.alpha;
+  if (alpha === null) return;
+
+  // اتجاه الشمال الحقيقي
+  let heading = 360 - alpha;
+
+  // زاوية السهم نحو القبلة
+  let rotation = qiblaDirection - heading;
+
+  document.getElementById("arrow").style.transform =
+    `translateX(-50%) rotate(${rotation}deg)`;
 }
 </script>
 
