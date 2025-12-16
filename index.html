@@ -5,7 +5,6 @@
 <title>Accounting Interview 3D</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Three.js -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/loaders/GLTFLoader.js"></script>
 
@@ -16,41 +15,17 @@ body {
     background: radial-gradient(#111, #000);
     color: #fff;
 }
-
-/* المشهد */
-.container {
-    max-width: 1000px;
-    margin: auto;
-}
-
-/* 3D */
-#threeScene {
-    width: 100%;
-    height: 380px;
-    background: #1a1a1a;
-}
-
-/* المكتب */
-.desk {
-    height: 60px;
-    background: linear-gradient(#6d4c41, #4e342e);
-}
-
-/* المحتوى */
-.content {
-    padding: 20px;
-    background: #111;
-}
-
+.container { max-width: 1000px; margin: auto; }
+#threeScene { height: 380px; background: #111; }
+.desk { height: 60px; background: linear-gradient(#6d4c41, #4e342e); }
+.content { padding: 20px; background: #0d0d0d; }
 .question {
     font-size: 20px;
-    margin-bottom: 15px;
-    min-height: 60px;
+    min-height: 70px;
     border-right: 4px solid #00e5ff;
     padding-right: 10px;
+    margin-bottom: 10px;
 }
-
-/* الإدخال */
 textarea {
     width: 100%;
     height: 90px;
@@ -58,19 +33,12 @@ textarea {
     padding: 10px;
     border-radius: 8px;
     border: none;
-    outline: none;
 }
-
-/* أزرار */
-.buttons {
-    margin-top: 15px;
-    display: flex;
-    gap: 10px;
-}
+.buttons { display: flex; gap: 10px; margin-top: 10px; }
 button {
     flex: 1;
     padding: 12px;
-    font-size: 16px;
+    font-size: 15px;
     border-radius: 8px;
     border: none;
     cursor: pointer;
@@ -84,17 +52,11 @@ button {
 <body>
 
 <div class="container">
-
-    <!-- شخصية 3D -->
     <div id="threeScene"></div>
-
-    <!-- المكتب -->
     <div class="desk"></div>
 
-    <!-- المحتوى -->
     <div class="content">
         <div class="question" id="question"></div>
-
         <textarea id="answer" placeholder="اكتب إجابتك أو استخدم التسجيل الصوتي..."></textarea>
 
         <div class="buttons">
@@ -103,40 +65,67 @@ button {
             <button class="next" onclick="nextQuestion()">➡️ التالي</button>
         </div>
     </div>
-
 </div>
 
 <audio id="voice"></audio>
 
 <script>
-/* ================== الأسئلة ================== */
+/* ================= الأسئلة ================= */
 const questions = [
- "عرف نفسك في دقيقة واحدة.",
- "كيف تتصرف تحت ضغط العمل؟",
- "ما الفرق بين المصروف الرأسمالي والإيرادي؟",
- "إذا لم يتوازن ميزان المراجعة، ماذا تفعل؟",
- "ما تقييمك لذكائك المالي؟"
+ {q:"عرف نفسك في دقيقة واحدة.", type:"psy"},
+ {q:"كيف تتصرف تحت ضغط العمل؟", type:"psy"},
+ {q:"ما أكبر نقطة ضعف لديك؟", type:"psy"},
+ {q:"ما الفرق بين المصروف الرأسمالي والإيرادي؟", type:"acc"},
+ {q:"كيف تعالج عدم توازن ميزان المراجعة؟", type:"acc"},
+ {q:"ما تأثير الإهلاك على القوائم المالية؟", type:"acc"},
+ {q:"متى يتم الاعتراف بالإيراد؟", type:"acc"},
+ {q:"إذا زادت الخصوم المتداولة عن الأصول المتداولة، ماذا يعني ذلك؟", type:"iq"},
+ {q:"كيف تتخذ قرارًا في ظل نقص المعلومات؟", type:"iq"}
 ];
 
+const keywords = {
+ acc:["إيراد","مصروف","أصول","خصوم","إهلاك","ميزانية"],
+ psy:["أتعامل","أتعلم","أطور","أخطط","أتحمل"],
+ iq:["تحليل","قرار","بدائل","مخاطر"]
+};
+
+let score = {acc:0, psy:0, iq:0};
 let index = 0;
+
 const qBox = document.getElementById("question");
 const aBox = document.getElementById("answer");
-showQuestion();
+const audio = document.getElementById("voice");
 
-/* ================== عرض السؤال ================== */
 function showQuestion() {
-    qBox.textContent = questions[index];
+    qBox.textContent = questions[index].q;
     playVoice();
 }
+showQuestion();
 
-/* ================== صوت احترافي ================== */
+/* ========== تشغيل الصوت + تحريك الشفاه ========== */
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const analyser = audioCtx.createAnalyser();
+const source = audioCtx.createMediaElementSource(audio);
+source.connect(analyser);
+analyser.connect(audioCtx.destination);
+analyser.fftSize = 256;
+const data = new Uint8Array(analyser.frequencyBinCount);
+
 function playVoice() {
-    const audio = document.getElementById("voice");
     audio.src = "audio/q" + (index + 1) + ".mp3";
     audio.play();
+    audioCtx.resume();
 }
 
-/* ================== تحويل الصوت لنص ================== */
+function lipSync() {
+    analyser.getByteFrequencyData(data);
+    let volume = data.reduce((a,b)=>a+b) / data.length;
+    if (model) model.scale.y = 1 + volume / 2000;
+    requestAnimationFrame(lipSync);
+}
+audio.onplay = () => lipSync();
+
+/* ========== تسجيل صوت المستخدم ========== */
 function startVoice() {
     if (!('webkitSpeechRecognition' in window)) {
         alert("المتصفح لا يدعم التسجيل الصوتي");
@@ -148,49 +137,76 @@ function startVoice() {
     rec.onresult = e => aBox.value += e.results[0][0].transcript;
 }
 
-/* ================== التالي ================== */
+/* ========== التقييم ========== */
+function evaluate(answer, type) {
+    let pts = 0;
+    let words = answer.split(" ").length;
+    if (words > 5) pts += 2;
+    if (words > 15) pts += 2;
+    keywords[type].forEach(k => { if (answer.includes(k)) pts++; });
+    score[type] += pts;
+}
+
 function nextQuestion() {
+    evaluate(aBox.value, questions[index].type);
     index++;
     if (index >= questions.length) {
-        alert("انتهى الإنترفيو ✅");
-        index = 0;
+        showResult();
+        return;
     }
     aBox.value = "";
     showQuestion();
 }
 
-/* ================== 3D SCENE ================== */
+function showResult() {
+    qBox.innerHTML = `
+    ✅ انتهى الإنترفيو<br><br>
+    🧠 نفسي: ${score.psy}<br>
+    📊 محاسبة: ${score.acc}<br>
+    ⚡ ذكاء: ${score.iq}<br><br>
+    ⭐ التقييم النهائي: ${finalLevel()}
+    `;
+}
+
+function finalLevel() {
+    let total = score.acc + score.psy + score.iq;
+    if (total > 35) return "ممتاز جدًا";
+    if (total > 25) return "جيد جدًا";
+    if (total > 15) return "جيد";
+    return "يحتاج تطوير";
+}
+
+/* ========== Three.js 3D ========== */
 let scene = new THREE.Scene();
 scene.background = new THREE.Color(0x111111);
 
 let camera = new THREE.PerspectiveCamera(45, window.innerWidth / 380, 0.1, 100);
 camera.position.set(0, 1.6, 2.8);
 
-let renderer = new THREE.WebGLRenderer({ antialias: true });
+let renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(window.innerWidth, 380);
 document.getElementById("threeScene").appendChild(renderer.domElement);
 
-/* إضاءة واقعية */
 scene.add(new THREE.AmbientLight(0xffffff, 0.6));
 let light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(2, 5, 5);
+light.position.set(2,5,5);
 scene.add(light);
 
-/* تحميل المحاسب */
+let model;
 let loader = new THREE.GLTFLoader();
 loader.load("accountant.glb", gltf => {
-    let model = gltf.scene;
-    model.scale.set(1.4, 1.4, 1.4);
+    model = gltf.scene;
+    model.scale.set(1.4,1.4,1.4);
     model.position.y = -1;
     scene.add(model);
-
-    function animate() {
-        model.rotation.y += 0.0015; // حركة خفيفة واقعية
-        renderer.render(scene, camera);
-        requestAnimationFrame(animate);
-    }
     animate();
 });
+
+function animate() {
+    requestAnimationFrame(animate);
+    if (model) model.rotation.y += 0.001;
+    renderer.render(scene, camera);
+}
 </script>
 
 </body>
