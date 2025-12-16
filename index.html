@@ -1,219 +1,166 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>Accounting Interview Simulator</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/loaders/GLTFLoader.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+<title>لعبة تجميع أسماء الحيوانات</title>
 <style>
-body {
- margin:0;
- font-family:Tahoma;
- background:#000;
- color:#fff;
- overflow:hidden;
-}
-#three { height:38vh; }
-.desk { height:50px; background:#5d4037; }
-.panel { padding:15px; background:#111; height:62vh; overflow:auto; }
-.question { font-size:20px; border-right:4px solid #00e5ff; padding-right:10px; }
-textarea {
- width:100%; height:80px; margin-top:10px;
- border-radius:8px; border:none; padding:10px;
-}
-.buttons button {
- width:100%; margin-top:8px;
- padding:12px; font-size:15px;
- border:none; border-radius:8px;
-}
-.read{background:#0288d1;color:#fff}
-.voice{background:#2e7d32;color:#fff}
-.next{background:#6a1b9a;color:#fff}
-.record{background:#c62828;color:#fff}
-#timer {
- position:absolute; top:10px; left:10px;
- background:red; padding:8px 15px;
- font-size:18px; border-radius:20px;
-}
-@keyframes shake {
- 0%{transform:translateX(0)}
- 25%{transform:translateX(5px)}
- 50%{transform:translateX(-5px)}
- 75%{transform:translateX(5px)}
- 100%{transform:translateX(0)}
-}
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(#e3f2fd, #bbdefb);
+        text-align: center;
+        direction: rtl;
+    }
+
+    h1 {
+        margin-top: 20px;
+    }
+
+    .target {
+        font-size: 24px;
+        margin: 15px;
+        font-weight: bold;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(5, 60px);
+        gap: 10px;
+        justify-content: center;
+        margin: 20px;
+    }
+
+    .box {
+        width: 60px;
+        height: 60px;
+        background: #fff;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        border: 2px solid #2196f3;
+    }
+
+    .box:hover {
+        background: #e3f2fd;
+    }
+
+    .answer {
+        font-size: 26px;
+        margin: 15px;
+        min-height: 30px;
+    }
+
+    .success {
+        color: white;
+        background: #4caf50;
+        padding: 15px;
+        border-radius: 10px;
+        display: inline-block;
+        margin-top: 15px;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 18px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        background: #2196f3;
+        color: white;
+        margin-top: 15px;
+    }
 </style>
 </head>
 
 <body>
 
-<div id="timer">30</div>
-<div id="three"></div>
-<div class="desk"></div>
+<h1>🐾 لعبة تجميع أسماء الحيوانات</h1>
 
-<div class="panel">
- <div class="question" id="q"></div>
- <textarea id="a" placeholder="اكتب أو استخدم الصوت..."></textarea>
+<div class="target" id="target"></div>
 
- <div class="buttons">
-  <button class="read" onclick="playQ()">🔊 السؤال</button>
-  <button class="voice" onclick="voiceIn()">🎤 إجابة صوتية</button>
-  <button class="record" onclick="startRec()">🎥 تسجيل</button>
-  <button class="next" onclick="next()">➡️ التالي</button>
- </div>
-</div>
+<div class="grid" id="grid"></div>
 
-<audio id="audio"></audio>
-<audio id="heart" src="audio/heartbeat.mp3" loop></audio>
+<div class="answer" id="answer"></div>
+
+<div id="message"></div>
 
 <script>
-/* ===== الأسئلة ===== */
-const qs=[
-{t:"عرف نفسك في دقيقة.",c:"psy"},
-{t:"كيف تتصرف تحت الضغط؟",c:"psy"},
-{t:"ما الفرق بين المصروف الرأسمالي والإيرادي؟",c:"acc"},
-{t:"كيف تعالج عدم توازن ميزان المراجعة؟",c:"acc"},
-{t:"متى يتم الاعتراف بالإيراد؟",c:"acc"},
-{t:"ما تأثير الإهلاك؟",c:"acc"},
-{t:"إذا زادت الخصوم عن الأصول؟",c:"iq"},
-{t:"كيف تتخذ قرارًا مع نقص البيانات؟",c:"iq"},
-{t:"هل تفضل العمل الفردي أم الجماعي؟",c:"psy"}
+const levels = [
+    "قطة",
+    "أسد",
+    "فيل",
+    "زرافة",
+    "تمساح"
 ];
 
-const keys={
- acc:["أصول","خصوم","إيراد","مصروف","إهلاك"],
- psy:["أتعامل","أطور","أتعلم","أتحمل"],
- iq:["تحليل","قرار","بدائل"]
-};
+let level = 0;
+let currentAnswer = "";
 
-let i=0,score={acc:0,psy:0,iq:0};
-const q=document.getElementById("q");
-const a=document.getElementById("a");
-const audio=document.getElementById("audio");
-
-/* ===== عرض السؤال ===== */
-function show(){
- q.innerText=qs[i].t;
- audio.src="audio/q"+(i+1)+".mp3";
- audio.play();
- startTimer();
-}
-show();
-
-/* ===== تايمر ضغط نفسي ===== */
-let tInt;
-function startTimer(){
- let t=30;
- clearInterval(tInt);
- document.getElementById("heart").pause();
- tInt=setInterval(()=>{
-  document.getElementById("timer").innerText=t;
-  if(t<10){
-   document.body.style.animation="shake .2s infinite";
-   document.getElementById("heart").play();
-  }
-  if(t--<0){clearInterval(tInt);next();}
- },1000);
+function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
 }
 
-/* ===== تقييم ===== */
-function evalAns(){
- let txt=a.value;
- let pts=txt.split(" ").length>5?2:0;
- keys[qs[i].c].forEach(k=>{if(txt.includes(k))pts++;});
- score[qs[i].c]+=pts;
+function startLevel() {
+    currentAnswer = "";
+    document.getElementById("answer").textContent = "";
+    document.getElementById("message").innerHTML = "";
+
+    const animal = levels[level];
+    document.getElementById("target").textContent =
+        "كوّن اسم الحيوان (" + animal.length + " حروف)";
+
+    let letters = animal.split("");
+
+    // إضافة حروف عشوائية للتصعيب
+    const extraLetters = ["ب","م","ر","ك","ل","ن","س","ت","ي"];
+    while (letters.length < 10) {
+        letters.push(extraLetters[Math.floor(Math.random() * extraLetters.length)]);
+    }
+
+    letters = shuffle(letters);
+
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+
+    letters.forEach(letter => {
+        const div = document.createElement("div");
+        div.className = "box";
+        div.textContent = letter;
+        div.onclick = () => selectLetter(letter, div);
+        grid.appendChild(div);
+    });
 }
 
-/* ===== التالي ===== */
-function next(){
- evalAns();
- document.body.style.animation="";
- i++;
- a.value="";
- if(i>=qs.length){finish();return;}
- show();
+function selectLetter(letter, box) {
+    currentAnswer += letter;
+    document.getElementById("answer").textContent = currentAnswer;
+    box.style.visibility = "hidden";
+
+    if (currentAnswer === levels[level]) {
+        document.getElementById("message").innerHTML =
+            '<div class="success">🎉 مبروك فوزك 🎉</div>';
+
+        setTimeout(() => {
+            level++;
+            if (level < levels.length) {
+                startLevel();
+            } else {
+                document.getElementById("target").textContent = "🏆 أنهيت جميع المراحل!";
+                document.getElementById("grid").innerHTML = "";
+            }
+        }, 1500);
+    }
+
+    if (!levels[level].startsWith(currentAnswer)) {
+        // خطأ – إعادة المحاولة
+        setTimeout(startLevel, 700);
+    }
 }
 
-/* ===== النهاية ===== */
-function finish(){
- q.innerHTML=`انتهى الإنترفيو ✅<br>
- نفسي: ${score.psy}<br>
- محاسبة: ${score.acc}<br>
- ذكاء: ${score.iq}<br>
- التقييم: ${level()}`;
- genPDF();
-}
-
-/* ===== مستوى ===== */
-function level(){
- let s=score.acc+score.psy+score.iq;
- if(s>30)return"ممتاز جدًا";
- if(s>20)return"جيد جدًا";
- if(s>10)return"جيد";
- return"يحتاج تطوير";
-}
-
-/* ===== PDF ===== */
-function genPDF(){
- const {jsPDF}=window.jspdf;
- const d=new jsPDF();
- d.text("Accounting Interview Certificate",20,20);
- d.text("Psychological: "+score.psy,20,40);
- d.text("Accounting: "+score.acc,20,50);
- d.text("IQ: "+score.iq,20,60);
- d.text("Final: "+level(),20,80);
- d.save("Interview-Certificate.pdf");
-}
-
-/* ===== صوت المستخدم ===== */
-function voiceIn(){
- if(!webkitSpeechRecognition)return alert("Chrome فقط");
- let r=new webkitSpeechRecognition();
- r.lang="ar-EG"; r.start();
- r.onresult=e=>a.value+=e.results[0][0].transcript;
-}
-
-/* ===== تسجيل فيديو ===== */
-let rec,chunks=[];
-async function startRec(){
- const s=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
- rec=new MediaRecorder(s);
- rec.ondataavailable=e=>chunks.push(e.data);
- rec.onstop=()=>{
-  let b=new Blob(chunks,{type:"video/webm"});
-  let u=URL.createObjectURL(b);
-  let a=document.createElement("a");
-  a.href=u;a.download="interview.webm";a.click();
- };
- rec.start();
- alert("تم بدء التسجيل");
-}
-
-/* ===== Three.js ===== */
-let scene=new THREE.Scene();
-let cam=new THREE.PerspectiveCamera(45,window.innerWidth/(window.innerHeight*.38),.1,100);
-cam.position.set(0,1.6,2.8);
-let ren=new THREE.WebGLRenderer({antialias:true});
-ren.setSize(window.innerWidth,window.innerHeight*.38);
-document.getElementById("three").appendChild(ren.domElement);
-scene.add(new THREE.AmbientLight(0xffffff,.7));
-let dl=new THREE.DirectionalLight(0xffffff,1);
-dl.position.set(2,5,5);scene.add(dl);
-let model;
-new THREE.GLTFLoader().load("accountant.glb",g=>{
- model=g.scene;model.scale.set(1.4,1.4,1.4);
- model.position.y=-1;scene.add(model);
- animate();
-});
-function animate(){
- requestAnimationFrame(animate);
- if(model)model.rotation.y+=.001;
- ren.render(scene,cam);
-}
+startLevel();
 </script>
+
 </body>
 </html>
