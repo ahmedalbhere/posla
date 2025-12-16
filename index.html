@@ -1,192 +1,619 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لعبة الحيوانات الذكية</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="لعبة تعليمية تفاعلية للأطفال لتعلم أسماء الحيوانات باللغة العربية - طور مهارات طفلك في القراءة والإملاء بطريقة ممتعة">
+    <meta name="keywords" content="لعبة عربية, تعليم الأطفال, أسماء الحيوانات, لعبة تعليمية, ألعاب عربية, تعليم القراءة">
+    <meta name="author" content="لعبة الحيوانات الذكية">
+    <meta property="og:title" content="لعبة الحيوانات الذكية - تعلم أسماء الحيوانات بالعربية">
+    <meta property="og:description" content="لعبة تعليمية ممتعة للأطفال لتعلم أسماء الحيوانات وطريقة كتابتها باللغة العربية">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="لعبة الحيوانات الذكية">
+    <meta name="twitter:description" content="لعبة عربية تعليمية للأطفال - تعلم أسماء الحيوانات">
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "EducationalGame",
+        "name": "لعبة الحيوانات الذكية",
+        "description": "لعبة تعليمية تفاعلية لتعليم الأطفال أسماء الحيوانات باللغة العربية",
+        "educationalUse": "تعليم القراءة والإملاء",
+        "learningResourceType": "لعبة تعليمية",
+        "typicalAgeRange": "5-10",
+        "language": "ar",
+        "author": {
+            "@type": "Organization",
+            "name": "العاب تعليمية عربية"
+        },
+        "accessibilityFeature": ["textToSpeech", "largePrint", "highContrast"],
+        "accessibilityHazard": "none",
+        "educationalAlignment": {
+            "@type": "AlignmentObject",
+            "alignmentType": "educationalSubject",
+            "educationalFramework": "المنهج التعليمي العربي",
+            "targetName": "مفردات اللغة العربية"
+        }
+    }
+    </script>
+    
+    <title>لعبة الحيوانات الذكية - تعلم أسماء الحيوانات بالعربية</title>
+    
+    <!-- Favicon Base64 encoded -->
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTMyIDZDMjAuOTU0IDYgMTIgMTQuOTU0IDEyIDI2QzEyIDMzLjg0NiAxNi43NjMgNDAuNDYyIDI0IDQyLjQ4NlY0OC4zOEMyMy45ODIgNDguOTI3IDIzLjk0IDQ5LjQ2NiAyMy44NzUgNTBDMjMuNzU3IDUwLjY5OSAyMy4zODcgNTEuMzE1IDIyLjg2IDUxLjczOEMyMi4zMzMgNTIuMTYxIDIxLjY4NiA1Mi4zNjMgMjEuMDM1IDUyLjMwNUMyMC4zODQgNTIuMjQ2IDE5Ljc3NyA1MS45MzMgMTkuMzM1IDUxLjQzOEMxOC44OTIgNTAuOTQzIDE4LjY0OSA1MC4zMDMgMTguNjQ5IDQ5LjY0M0MxOC42NDkgNDguOTgzIDE4Ljg5MiA0OC4zNDMgMTkuMzM1IDQ3Ljg0OEMxOS43NzcgNDcuMzUzIDIwLjM4NCA0Ny4wNCAyMS4wMzUgNDYuOTgyQzIxLjY4NiA0Ni45MjMgMjIuMzMzIDQ3LjEyNSAyMi44NiA0Ny41NDhDMjMuMzg3IDQ3Ljk3MSAyMy43NTcgNDguNTg3IDIzLjg3NSA0OS4yODZDMjMuOTQyIDQ5LjgwMiAyMy45ODIgNTAuMzIgMjQgNTAuODRWNTAuODRDMTYuNjQyIDUwLjg0IDEwLjg0IDQ1LjAzOCAxMC44NCAzNy42OEMxMC44NCAzMC4zMjIgMTYuNjQyIDI0LjUyIDI0IDI0LjUyQzMxLjM1OCAyNC41MiAzNy4xNiAzMC4zMjIgMzcuMTYgMzcuNjhDMzcuMTYgNDUuMDM4IDMxLjM1OCA1MC44NCAyNCA1MC44NFY0Mi40ODZDMzEuMjM3IDQwLjQ2MiAzNiAzMy44NDYgMzYgMjZDMzYgMTQuOTU0IDI3LjA0NiA2IDE2IDZIMzJaIiBmaWxsPSIjMjE5NkYzIi8+CjxwYXRoIGQ9Ik0yNCA0Mi40ODZWNDguMzhDMjMuOTggNDguOTI3IDIzLjkzOCA0OS40NjYgMjMuODczIDUwQzIzLjc1NSA1MC42OTkgMjMuMzg1IDUxLjMxNSAyMi44NTggNTEuNzM4QzIyLjMzMSA1Mi4xNjEgMjEuNjg0IDUyLjM2MyAyMS4wMzMgNTIuMzA1QzIwLjM4MiA1Mi4yNDYgMTkuNzc1IDUxLjkzMyAxOS4zMzMgNTEuNDM4QzE4Ljg5IDUwLjk0MyAxOC42NDcgNTAuMzAzIDE4LjY0NyA0OS42NDNDMTguNjQ3IDQ4Ljk4MyAxOC44OSA0OC4zNDMgMTkuMzMzIDQ3Ljg0OEMxOS43NzUgNDcuMzUzIDIwLjM4MiA0Ny4wNCAyMS4wMzMgNDYuOTgyQzIxLjY4NCA0Ni45MjMgMjIuMzMxIDQ3LjEyNSAyMi44NTggNDcuNTQ4QzIzLjM4NSA0Ny45NzEgMjMuNzU1IDQ4LjU4NyAyMy44NzMgNDkuMjg2QzIzLjk0IDQ5LjgwMiAyMy45OCA1MC4zMiAyNCA1MC44NFY1MC44NEMxNi42NDIgNTAuODQgMTAuODQgNDUuMDM4IDEwLjg0IDM3LjY4QzEwLjg0IDMwLjMyMiAxNi42NDIgMjQuNTIgMjQgMjQuNTJDMzEuMzU4IDI0LjUyIDM3LjE2IDMwLjMyMiAzNy4xNiAzNy42OEMzNy4xNiA0NS4wMzggMzEuMzU4IDUwLjg0IDI0IDUwLjg0VjQyLjQ4NkMzMS4yMzcgNDAuNDYyIDM2IDMzLjg0NiAzNiAyNkMzNiAxNC45NTQgMjcuMDQ2IDYgMTYgNkgzMkMyMC45NTQgNiAxMiAxNC45NTQgMTIgMjZDMTIgMzMuODQ2IDE2Ljc2MyA40MC40NjIgMjQgNDIuNDg2WiIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzY4MF8xKSIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzY4MF8xIiB4MT0iMTIiIHkxPSI2IiB4Mj0iMzYiIHkyPSI1MCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMjE5NkYzIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwQkNEWCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPgo=" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik05NiAxNkM0OS42NCAxNiAxMi44OCA0OS4wNCA2LjQgOTMuNkM1LjA2IDEwMi44IDMuOSAxMTIuMDggMyAxMjEuNDRDMi4xMiAxMzAuNTIgMS45NiAxMzkuNjQgMi41MiAxNDguNzJDMy4zNiAxNjIuMDQgMTEuNDQgMTc0LjA4IDI0LjA4IDE4MC44QzMxLjk2IDE4NS40IDQxLjI0IDE4OCA1MC41NiAxODhINzIuNDhDODEuNiAxODggOTAuNjggMTg1LjkyIDk5LjIgMTgxLjk2QzEwNy43NiAxNzguMDQgMTE2LjA4IDE3My42IDEyNC4xNiAxNjguNzJDMTM4LjQ4IDE2MC40IDE1My4zNiAxNTIuOTIgMTY2Ljg4IDE0My4yQzE4MS40OCAxMzIuNjQgMTkyIDExNC40IDE5MiA5NkMxOTIgNDMuMDggMTQ4LjkyIDAgOTYgMFYxNloiIGZpbGw9IiMyMTk2RjMiLz4KPHBhdGggZD0iTTk2IDE0MS43NkM5NiAxNTcuNzYgODIuNTYgMTcwLjcyIDY2LjQgMTcwLjcyQzUwLjI0IDE3MC43MiAzNi44IDE1Ny43NiAzNi44IDE0MS43NkMzNi44IDEyNS43NiA1MC4yNCAxMTIuOCA2Ni40IDExMi44QzgyLjU2IDExMi44IDk2IDEyNS43NiA5NiAxNDEuNzZaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTU1LjIgMTQxLjc2QzE1NS4yIDE1Ny43NiAxNDEuNzYgMTcwLjcyIDEyNS42IDE3MC43MkMxMDkuNDQgMTcwLjcyIDk2IDE1Ny43NiA5NiAxNDEuNzZDOTYgMTI1Ljc2IDEwOS40NCAxMTIuOCAxMjUuNiAxMTIuOEMxNDEuNzYgMTEyLjggMTU1LjIgMTI1Ljc2IDE1NS4yIDE0MS43NloiIGZpbGw9IiNGRkNFMDAiLz4KPC9zdmc+Cg==">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+    * {
+        box-sizing: border-box;
+        font-family: "Cairo", Arial, sans-serif;
+    }
 
-<style>
-* {
-    box-sizing: border-box;
-    font-family: "Cairo", Arial, sans-serif;
-}
+    body {
+        margin: 0;
+        background: linear-gradient(135deg, #1a6bc4, #00bcd4);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        direction: rtl;
+        padding: 20px;
+    }
 
-body {
-    margin: 0;
-    background: linear-gradient(135deg, #2196f3, #00bcd4);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    direction: rtl;
-}
+    .game-card {
+        background: #ffffff;
+        width: 95%;
+        max-width: 480px;
+        border-radius: 24px;
+        padding: 25px;
+        box-shadow: 0 20px 40px rgba(0,0,0,.3);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
 
-.game-card {
-    background: #ffffff;
-    width: 95%;
-    max-width: 420px;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 15px 30px rgba(0,0,0,.25);
-    text-align: center;
-}
+    .game-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #ff9800, #ff5722, #4caf50, #2196f3);
+    }
 
-h1 {
-    margin: 0 0 10px;
-    color: #2196f3;
-}
+    h1 {
+        margin: 0 0 8px;
+        color: #1a6bc4;
+        font-size: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
 
-.level {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 10px;
-}
+    .level-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding: 0 5px;
+    }
 
-.target {
-    font-size: 22px;
-    margin: 15px 0;
-    font-weight: bold;
-}
+    .level {
+        font-size: 16px;
+        color: #555;
+        font-weight: 600;
+    }
 
-.answer {
-    min-height: 40px;
-    border-radius: 10px;
-    background: #f1f1f1;
-    margin-bottom: 15px;
-    font-size: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    .score {
+        font-size: 16px;
+        color: #ff5722;
+        font-weight: 700;
+    }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-}
+    .target {
+        font-size: 24px;
+        margin: 20px 0;
+        font-weight: bold;
+        color: #333;
+        background: #f9f9f9;
+        padding: 12px;
+        border-radius: 15px;
+        border: 2px dashed #4caf50;
+    }
 
-.box {
-    background: #e3f2fd;
-    border-radius: 12px;
-    height: 55px;
-    font-size: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.2s;
-}
+    .answer {
+        min-height: 50px;
+        border-radius: 12px;
+        background: #f1f8ff;
+        margin-bottom: 20px;
+        font-size: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #2196f3;
+        color: #1a6bc4;
+        font-weight: bold;
+        letter-spacing: 2px;
+        transition: all 0.3s;
+    }
 
-.box:active {
-    transform: scale(0.9);
-}
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+    }
 
-.success {
-    background: #4caf50;
-    color: white;
-    padding: 12px;
-    border-radius: 12px;
-    margin-top: 15px;
-    font-size: 18px;
-}
+    .box {
+        background: linear-gradient(145deg, #e3f2fd, #bbdefb);
+        border-radius: 15px;
+        height: 65px;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-weight: bold;
+        color: #1a6bc4;
+        box-shadow: 0 5px 10px rgba(0,0,0,.1);
+        user-select: none;
+    }
 
-.finish {
-    color: #4caf50;
-    font-size: 22px;
-    font-weight: bold;
-}
-</style>
+    .box:hover {
+        transform: translateY(-5px);
+        background: linear-gradient(145deg, #bbdefb, #90caf9);
+    }
+
+    .box:active {
+        transform: scale(0.95);
+    }
+
+    .box.used {
+        visibility: hidden;
+    }
+
+    .success {
+        background: linear-gradient(to right, #4caf50, #8bc34a);
+        color: white;
+        padding: 15px;
+        border-radius: 15px;
+        margin-top: 20px;
+        font-size: 20px;
+        font-weight: bold;
+        animation: pulse 1.5s infinite;
+    }
+
+    .wrong {
+        background: #ffebee;
+        border: 2px solid #ff5722;
+        color: #ff5722;
+        animation: shake 0.5s;
+    }
+
+    .finish {
+        color: #4caf50;
+        font-size: 26px;
+        font-weight: bold;
+        padding: 20px;
+        background: #f1f8e9;
+        border-radius: 15px;
+        margin: 20px 0;
+    }
+
+    .progress-container {
+        width: 100%;
+        height: 10px;
+        background: #e0e0e0;
+        border-radius: 5px;
+        margin: 15px 0 25px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(to right, #4caf50, #8bc34a);
+        width: 0%;
+        transition: width 0.5s;
+    }
+
+    .animal-emoji {
+        font-size: 40px;
+        margin: 10px 0;
+        height: 60px;
+    }
+
+    .hint {
+        font-size: 14px;
+        color: #666;
+        margin-top: 5px;
+    }
+
+    /* تحسينات إضافية للSEO والوصول */
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .seo-content {
+        display: none;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    @media (max-width: 500px) {
+        .game-card {
+            padding: 20px;
+        }
+        
+        .grid {
+            gap: 10px;
+        }
+        
+        .box {
+            height: 55px;
+            font-size: 22px;
+        }
+    }
+
+    /* تحسينات إضافية للتوافق مع الشاشات المختلفة */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
+    /* تحسينات للطباعة */
+    @media print {
+        body {
+            background: white !important;
+        }
+        .game-card {
+            box-shadow: none !important;
+            border: 1px solid #ddd;
+        }
+    }
+    </style>
 </head>
 
-<body>
+<body itemscope itemtype="https://schema.org/WebApplication">
+    
+    <!-- محتوى مخفي لتحسين SEO -->
+    <div class="seo-content" itemprop="description">
+        لعبة الحيوانات الذكية - لعبة تعليمية ممتعة للأطفال لتعلم أسماء الحيوانات باللغة العربية.
+        تساعد اللعبة في تطوير مهارات القراءة والكتابة والإملاء لدى الأطفال من خلال تجربة تفاعلية مسلية.
+        العب الآن مجاناً بدون تنزيل!
+    </div>
 
-<div class="game-card">
-    <h1>🐾 لعبة الحيوانات</h1>
-    <div class="level" id="level"></div>
-    <div class="target" id="target"></div>
-    <div class="answer" id="answer"></div>
-    <div class="grid" id="grid"></div>
-    <div id="message"></div>
-</div>
+    <div class="game-card" role="main" aria-label="لوحة لعبة الحيوانات الذكية">
+        <h1 itemprop="name">🐾 لعبة الحيوانات الذكية</h1>
+        
+        <div class="level-info">
+            <div class="level" id="level" aria-live="polite">المرحلة 1 من 12</div>
+            <div class="score">النقاط: <span id="score" aria-live="polite">0</span></div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progress" role="progressbar" 
+                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+        </div>
+        
+        <div class="animal-emoji" id="animalEmoji" aria-label="رمز تعبيري للحيوان"></div>
+        
+        <div class="target" id="target" aria-label="تعليمات اللعبة">
+            كوّن اسم الحيوان (3 حروف)<br>
+            <span class="hint">انقر على الحروف بالترتيب الصحيح</span>
+        </div>
+        
+        <div class="answer" id="answer" aria-live="polite" aria-atomic="true"></div>
+        
+        <div class="grid" id="grid" role="grid" aria-label="شبكة الحروف"></div>
+        
+        <div id="message" aria-live="assertive" aria-atomic="true"></div>
+    </div>
 
-<script>
-const animals = [
-    "قطة","أسد","فيل","كلب","نمر",
-    "ثعلب","حمار","غزال","أرنب",
-    "زرافة","تمساح","باندا"
-];
+    <script>
+    // البيانات المنظمة للعبة
+    const gameSchema = {
+        "@context": "https://schema.org",
+        "@type": "EducationalGame",
+        "name": "لعبة الحيوانات الذكية",
+        "description": "لعبة تعليمية تفاعلية لتعليم الأطفال أسماء الحيوانات باللغة العربية",
+        "applicationCategory": "EducationalGame",
+        "operatingSystem": "Any",
+        "permissions": "none",
+        "countriesSupported": "العالم العربي",
+        "educationalAlignment": {
+            "@type": "AlignmentObject",
+            "alignmentType": "teaches",
+            "educationalFramework": "المنهج التعليمي العربي",
+            "targetDescription": "تعلم أسماء الحيوانات ومهارات القراءة العربية"
+        }
+    };
 
-let level = 0;
-let answer = "";
-
-function shuffle(arr) {
-    return arr.sort(() => Math.random() - 0.5);
-}
-
-function startLevel() {
-    answer = "";
-    document.getElementById("answer").textContent = "";
-    document.getElementById("message").innerHTML = "";
-
-    document.getElementById("level").textContent =
-        `المرحلة ${level + 1} من ${animals.length}`;
-
-    const word = animals[level];
-    document.getElementById("target").textContent =
-        `كوّن اسم الحيوان (${word.length} حروف)`;
-
-    let letters = word.split("");
-    const fillers = ["ب","م","ر","ل","ن","س","ت","ي","ك","د"];
-
-    while (letters.length < 10) {
-        letters.push(fillers[Math.floor(Math.random() * fillers.length)]);
-    }
-
-    letters = shuffle(letters);
-
-    const grid = document.getElementById("grid");
-    grid.innerHTML = "";
-
-    letters.forEach(l => {
-        const div = document.createElement("div");
-        div.className = "box";
-        div.textContent = l;
-        div.onclick = () => pickLetter(l, div);
-        grid.appendChild(div);
+    // إضافة المخطط إلى الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.textContent = JSON.stringify(gameSchema);
+        document.head.appendChild(script);
     });
-}
 
-function pickLetter(letter, el) {
-    answer += letter;
-    document.getElementById("answer").textContent = answer;
-    el.style.visibility = "hidden";
+    const animals = [
+        {name: "قطة", emoji: "🐱", description: "حيوان أليف محبوب"},
+        {name: "أسد", emoji: "🦁", description: "ملك الغابة"},
+        {name: "فيل", emoji: "🐘", description: "أكبر الحيوانات البرية"},
+        {name: "كلب", emoji: "🐶", description: "صديق الإنسان الوفي"},
+        {name: "نمر", emoji: "🐯", description: "حيوان مفترس مخطط"},
+        {name: "ثعلب", emoji: "🦊", description: "حيوان ذكي ومكار"},
+        {name: "حمار", emoji: "🐴", description: "حيوان يستخدم للركوب والحمل"},
+        {name: "غزال", emoji: "🦌", description: "حيوان رشيق وسريع"},
+        {name: "أرنب", emoji: "🐰", description: "حيوان أليف سريع التكاثر"},
+        {name: "زرافة", emoji: "🦒", description: "أطول الحيوانات البرية"},
+        {name: "تمساح", emoji: "🐊", description: "زواحف مائية مفترسة"},
+        {name: "باندا", emoji: "🐼", description: "دببة صينية نادرة"}
+    ];
 
-    const correct = animals[level];
+    let level = 0;
+    let answer = "";
+    let score = 0;
+    let gameStarted = false;
 
-    if (!correct.startsWith(answer)) {
-        setTimeout(startLevel, 600);
-        return;
+    // تعقب أحداث اللعبة لتحليل البيانات
+    const gameEvents = {
+        start: () => {
+            console.log('Game started');
+            gameStarted = true;
+        },
+        levelComplete: (levelNum, animalName) => {
+            console.log(`Level ${levelNum} completed: ${animalName}`);
+        },
+        gameComplete: (totalScore) => {
+            console.log(`Game completed with score: ${totalScore}`);
+        }
+    };
+
+    function shuffle(arr) {
+        return arr.sort(() => Math.random() - 0.5);
     }
 
-    if (answer === correct) {
-        document.getElementById("message").innerHTML =
-            `<div class="success">🎉 مبروك فوزك 🎉</div>`;
-
-        setTimeout(() => {
-            level++;
-            if (level < animals.length) {
-                startLevel();
-            } else {
-                document.getElementById("grid").innerHTML = "";
-                document.getElementById("target").innerHTML =
-                    `<div class="finish">🏆 أنهيت كل المراحل</div>`;
+    function startLevel() {
+        if (!gameStarted) gameEvents.start();
+        
+        answer = "";
+        document.getElementById("answer").textContent = "";
+        document.getElementById("answer").className = "answer";
+        document.getElementById("answer").setAttribute('aria-label', 'إجابة فارغة');
+        document.getElementById("message").innerHTML = "";
+        
+        // تحديث التقدم
+        const progressPercent = ((level) / animals.length) * 100;
+        document.getElementById("progress").style.width = `${progressPercent}%`;
+        document.getElementById("progress").setAttribute('aria-valuenow', progressPercent);
+        
+        document.getElementById("level").textContent = `المرحلة ${level + 1} من ${animals.length}`;
+        document.getElementById("level").setAttribute('aria-label', `المرحلة ${level + 1} من ${animals.length}`);
+        
+        const animal = animals[level];
+        document.getElementById("animalEmoji").textContent = animal.emoji;
+        document.getElementById("animalEmoji").setAttribute('aria-label', `رمز ${animal.name}`);
+        
+        document.getElementById("target").innerHTML = 
+            `كوّن اسم الحيوان (${animal.name.length} حروف)<br><span class="hint">انقر على الحروف بالترتيب الصحيح</span>`;
+        document.getElementById("target").setAttribute('aria-label', 
+            `كوّن اسم الحيوان، عدد الحروف ${animal.name.length}`);
+        
+        let letters = animal.name.split("");
+        const fillers = ["ب","م","ر","ل","ن","س","ت","ي","ك","د","و","ا","ط","ع","ف","ص","ق","ش","خ"];
+        
+        // إضافة حروف عشوائية حتى يصبح العدد 15 حرفًا
+        while (letters.length < 15) {
+            const randomLetter = fillers[Math.floor(Math.random() * fillers.length)];
+            // تجنب تكرار الحروف بشكل مفرط
+            if (!letters.includes(randomLetter) || Math.random() > 0.7) {
+                letters.push(randomLetter);
             }
-        }, 1200);
+        }
+        
+        letters = shuffle(letters);
+        
+        const grid = document.getElementById("grid");
+        grid.innerHTML = "";
+        
+        letters.forEach((l, index) => {
+            const div = document.createElement("button");
+            div.className = "box";
+            div.textContent = l;
+            div.setAttribute('aria-label', `حرف ${l}`);
+            div.setAttribute('role', 'gridcell');
+            div.setAttribute('tabindex', '0');
+            
+            // إضافة دعم لوحة المفاتيح
+            div.onkeydown = (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    pickLetter(l, div);
+                }
+            };
+            
+            div.onclick = () => pickLetter(l, div);
+            grid.appendChild(div);
+        });
+        
+        // تحديث وصف الصفحة ديناميكيًا
+        updatePageDescription();
     }
-}
 
-startLevel();
-</script>
+    function updatePageDescription() {
+        const animal = animals[level];
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+            metaDescription.content = `تعلم اسم ${animal.name} - ${animal.description}. العب الآن لعبة الحيوانات الذكية وتعلم أسماء الحيوانات بالعربية!`;
+        }
+    }
 
+    function pickLetter(letter, el) {
+        answer += letter;
+        document.getElementById("answer").textContent = answer;
+        document.getElementById("answer").setAttribute('aria-label', `الإجابة الحالية: ${answer}`);
+        el.classList.add("used");
+        el.setAttribute('tabindex', '-1');
+        
+        const correct = animals[level].name;
+        
+        // إذا كانت الإجابة خاطئة
+        if (!correct.startsWith(answer)) {
+            document.getElementById("answer").classList.add("wrong");
+            document.getElementById("message").innerHTML = 
+                `<div class="wrong" style="padding:10px;border-radius:10px;margin-top:15px">
+                 ❌ حاول مرة أخرى! الإجابة الصحيحة: ${correct}
+                 </div>`;
+            document.getElementById("message").setAttribute('aria-label', `خطأ، حاول مرة أخرى. الإجابة الصحيحة هي ${correct}`);
+            
+            setTimeout(() => {
+                // خصم نقاط عند الخطأ
+                if (score > 0) score -= 2;
+                document.getElementById("score").textContent = score;
+                document.getElementById("score").setAttribute('aria-label', `النقاط: ${score}`);
+                startLevel();
+            }, 1500);
+            return;
+        }
+        
+        // إذا كانت الإجابة صحيحة
+        if (answer === correct) {
+            // إضافة نقاط
+            score += 10;
+            document.getElementById("score").textContent = score;
+            document.getElementById("score").setAttribute('aria-label', `النقاط: ${score}`);
+            
+            // تسجيل إكمال المستوى
+            gameEvents.levelComplete(level + 1, correct);
+            
+            // عرض رسالة النجاح
+            document.getElementById("message").innerHTML = 
+                `<div class="success">🎉 أحسنت! لقد كسبت 10 نقاط 🎉</div>`;
+            document.getElementById("message").setAttribute('aria-label', `أحسنت! إجابة صحيحة. لقد ربحت 10 نقاط`);
+            
+            // تحديث محتوى SEO
+            updatePageDescription();
+            
+            // الانتقال للمرحلة التالية
+            setTimeout(() => {
+                level++;
+                if (level < animals.length) {
+                    startLevel();
+                } else {
+                    // نهاية اللعبة
+                    gameEvents.gameComplete(score);
+                    document.getElementById("grid").innerHTML = "";
+                    document.getElementById("target").innerHTML = "";
+                    document.getElementById("animalEmoji").textContent = "🏆";
+                    document.getElementById("animalEmoji").setAttribute('aria-label', 'كأس الفوز');
+                    document.getElementById("progress").style.width = "100%";
+                    document.getElementById("progress").setAttribute('aria-valuenow', 100);
+                    
+                    let finalMessage = `<div class="finish">🎊 مبروك! أنهيت كل المراحل 🎊<br>`;
+                    finalMessage += `<div style="font-size:20px;margin-top:15px;color:#ff9800">النقاط النهائية: ${score}</div>`;
+                    
+                    if (score >= animals.length * 10) {
+                        finalMessage += `<div style="font-size:18px;margin-top:10px;color:#4caf50">🌟 أداء رائع! حصلت على الدرجة الكاملة!</div>`;
+                    } else if (score >= animals.length * 7) {
+                        finalMessage += `<div style="font-size:18px;margin-top:10px;color:#2196f3">👍 جيد جداً! يمكنك تحسين النتيجة!</div>`;
+                    } else {
+                        finalMessage += `<div style="font-size:18px;margin-top:10px;color:#ff9800">💪 حاول مرة أخرى لتحسين نتيجتك!</div>`;
+                    }
+                    
+                    finalMessage += `<button onclick="restartGame()" style="margin-top:20px;padding:12px 25px;background:#2196f3;color:white;border:none;border-radius:10px;font-size:18px;cursor:pointer" aria-label="إعادة تشغيل اللعبة">العب مرة أخرى</button></div>`;
+                    
+                    document.getElementById("message").innerHTML = finalMessage;
+                    document.getElementById("message").setAttribute('aria-label', `تهانينا! أكملت جميع المستويات. نقاطك النهائية ${score}`);
+                    
+                    // تحديث عنوان الصفحة عند الانتهاء
+                    document.title = `أكملت اللعبة! - ${score} نقطة | لعبة الحيوانات الذكية`;
+                }
+            }, 1500);
+        }
+    }
+
+    // دالة إعادة التشغيل
+    window.restartGame = function() {
+        level = 0;
+        score = 0;
+        gameStarted = false;
+        document.title = "لعبة الحيوانات الذكية - تعلم أسماء الحيوانات بالعربية";
+        startLevel();
+    };
+
+    // بدء اللعبة
+    document.addEventListener('DOMContentLoaded', function() {
+        // تحسين تجربة المستخدم الأولية
+        setTimeout(() => {
+            document.getElementById("message").innerHTML = 
+                '<div style="background:#e8f5e9;padding:10px;border-radius:10px;margin-top:10px;color:#2e7d32">💡 انقر على الحروف لتكوين اسم الحيوان بالترتيب الصحيح!</div>';
+        }, 500);
+        
+        startLevel();
+    });
+
+    // دعم خدمة Worker لتخزين النتائج (للتحليلات المستقبلية)
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            // يمكن هنا إضافة Service Worker لتخزين النتائج محلياً
+            console.log('Service Worker supported - يمكن إضافة الميزات المتقدمة لاحقاً');
+        });
+    }
+
+    // إضافة تصريحات الوصول
+    document.body.setAttribute('aria-busy', 'false');
+    document.body.setAttribute('role', 'application');
+    </script>
+
+    <!-- نصوص إضافية لتحسين SEO (غير مرئية للمستخدم) -->
+    <div style="display:none;" aria-hidden="true">
+        <h2>لعبة تعليمية عربية مجانية</h2>
+        <p>تعلم أسماء الحيوانات باللغة العربية مع لعبة الحيوانات الذكية، العاب تعليمية للأطفال، ألعاب عربية تعليمية مجانية، تطوير مهارات القراءة العربية، ألعاب تعليمية تفاعلية، العاب أطفال تعليمية، لعبة حيوانات للأطفال، تعليم اللغة العربية للأطفال</p>
+        <ul>
+            <li>قطة</li>
+            <li>أسد</li>
+            <li>فيل</li>
+            <li>كلب</li>
+            <li>نمر</li>
+            <li>ثعلب</li>
+            <li>حمار</li>
+            <li>غزال</li>
+            <li>أرنب</li>
+            <li>زرافة</li>
+            <li>تمساح</li>
+            <li>باندا</li>
+        </ul>
+    </div>
 </body>
 </html>
