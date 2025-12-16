@@ -2,102 +2,91 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Interview Accountant</title>
+<title>Accounting Interview 3D</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Three.js -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/loaders/GLTFLoader.js"></script>
 
 <style>
 body {
     margin: 0;
     font-family: Tahoma, Arial;
-    background: linear-gradient(#eaeaea, #cfcfcf);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    background: radial-gradient(#111, #000);
+    color: #fff;
 }
 
 /* المشهد */
-.scene {
-    width: 95%;
-    max-width: 900px;
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    overflow: hidden;
+.container {
+    max-width: 1000px;
+    margin: auto;
 }
 
-/* المحاسب */
-.accountant {
-    background: #2c3e50;
-    color: #fff;
-    text-align: center;
-    padding: 20px;
-}
-.accountant img {
-    width: 140px;
-    border-radius: 50%;
-    border: 4px solid #fff;
-}
-.accountant h2 {
-    margin: 10px 0 0;
+/* 3D */
+#threeScene {
+    width: 100%;
+    height: 380px;
+    background: #1a1a1a;
 }
 
 /* المكتب */
 .desk {
-    background: #6d4c41;
     height: 60px;
+    background: linear-gradient(#6d4c41, #4e342e);
 }
 
-/* منطقة الأسئلة */
+/* المحتوى */
 .content {
     padding: 20px;
+    background: #111;
 }
 
 .question {
     font-size: 20px;
     margin-bottom: 15px;
     min-height: 60px;
+    border-right: 4px solid #00e5ff;
+    padding-right: 10px;
 }
 
 /* الإدخال */
 textarea {
     width: 100%;
-    height: 80px;
+    height: 90px;
     font-size: 16px;
     padding: 10px;
     border-radius: 8px;
-    border: 1px solid #ccc;
+    border: none;
+    outline: none;
 }
 
-/* الأزرار */
+/* أزرار */
 .buttons {
     margin-top: 15px;
     display: flex;
     gap: 10px;
-    flex-wrap: wrap;
 }
 button {
     flex: 1;
-    padding: 10px;
+    padding: 12px;
     font-size: 16px;
-    border: none;
     border-radius: 8px;
+    border: none;
     cursor: pointer;
 }
-.read { background: #3498db; color: #fff; }
-.voice { background: #27ae60; color: #fff; }
-.next { background: #8e44ad; color: #fff; }
+.read { background: #0288d1; color: #fff; }
+.voice { background: #2e7d32; color: #fff; }
+.next { background: #6a1b9a; color: #fff; }
 </style>
 </head>
 
 <body>
 
-<div class="scene">
-    <!-- المحاسب -->
-    <div class="accountant">
-        <img src="https://i.imgur.com/7kQEsHU.png" alt="Accountant">
-        <h2>المحاسب – Interview</h2>
-    </div>
+<div class="container">
+
+    <!-- شخصية 3D -->
+    <div id="threeScene"></div>
 
     <!-- المكتب -->
     <div class="desk"></div>
@@ -106,60 +95,60 @@ button {
     <div class="content">
         <div class="question" id="question"></div>
 
-        <textarea id="answer" placeholder="اكتب إجابتك هنا أو استخدم التسجيل الصوتي..."></textarea>
+        <textarea id="answer" placeholder="اكتب إجابتك أو استخدم التسجيل الصوتي..."></textarea>
 
         <div class="buttons">
-            <button class="read" onclick="readQuestion()">🔊 قراءة السؤال</button>
-            <button class="voice" onclick="startVoice()">🎤 تسجيل صوتي</button>
-            <button class="next" onclick="nextQuestion()">➡️ السؤال التالي</button>
+            <button class="read" onclick="playVoice()">🔊 استمع للسؤال</button>
+            <button class="voice" onclick="startVoice()">🎤 إجابة صوتية</button>
+            <button class="next" onclick="nextQuestion()">➡️ التالي</button>
         </div>
     </div>
+
 </div>
 
+<audio id="voice"></audio>
+
 <script>
+/* ================== الأسئلة ================== */
 const questions = [
-    "عرف نفسك في دقيقة واحدة.",
-    "كيف تتصرف تحت ضغط العمل؟",
-    "ما الفرق بين المصروف الرأسمالي والمصروف الإيرادي؟",
-    "إذا كان لديك خطأ في الميزان، كيف تكتشفه؟",
-    "ما هو معدل الذكاء المالي برأيك؟",
-    "إذا زادت الخصوم المتداولة عن الأصول المتداولة، ماذا يعني ذلك؟",
-    "اذكر موقفًا اتخذت فيه قرارًا محاسبيًا صعبًا."
+ "عرف نفسك في دقيقة واحدة.",
+ "كيف تتصرف تحت ضغط العمل؟",
+ "ما الفرق بين المصروف الرأسمالي والإيرادي؟",
+ "إذا لم يتوازن ميزان المراجعة، ماذا تفعل؟",
+ "ما تقييمك لذكائك المالي؟"
 ];
 
 let index = 0;
 const qBox = document.getElementById("question");
 const aBox = document.getElementById("answer");
-
-function showQuestion() {
-    qBox.textContent = questions[index];
-}
 showQuestion();
 
-/* قراءة السؤال */
-function readQuestion() {
-    const utter = new SpeechSynthesisUtterance(qBox.textContent);
-    utter.lang = "ar-EG";
-    speechSynthesis.speak(utter);
+/* ================== عرض السؤال ================== */
+function showQuestion() {
+    qBox.textContent = questions[index];
+    playVoice();
 }
 
-/* تحويل الصوت إلى نص */
+/* ================== صوت احترافي ================== */
+function playVoice() {
+    const audio = document.getElementById("voice");
+    audio.src = "audio/q" + (index + 1) + ".mp3";
+    audio.play();
+}
+
+/* ================== تحويل الصوت لنص ================== */
 function startVoice() {
     if (!('webkitSpeechRecognition' in window)) {
         alert("المتصفح لا يدعم التسجيل الصوتي");
         return;
     }
-
-    const recognition = new webkitSpeechRecognition();
-    recognition.lang = "ar-EG";
-    recognition.start();
-
-    recognition.onresult = function(event) {
-        aBox.value += event.results[0][0].transcript;
-    };
+    const rec = new webkitSpeechRecognition();
+    rec.lang = "ar-EG";
+    rec.start();
+    rec.onresult = e => aBox.value += e.results[0][0].transcript;
 }
 
-/* السؤال التالي */
+/* ================== التالي ================== */
 function nextQuestion() {
     index++;
     if (index >= questions.length) {
@@ -169,6 +158,39 @@ function nextQuestion() {
     aBox.value = "";
     showQuestion();
 }
+
+/* ================== 3D SCENE ================== */
+let scene = new THREE.Scene();
+scene.background = new THREE.Color(0x111111);
+
+let camera = new THREE.PerspectiveCamera(45, window.innerWidth / 380, 0.1, 100);
+camera.position.set(0, 1.6, 2.8);
+
+let renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, 380);
+document.getElementById("threeScene").appendChild(renderer.domElement);
+
+/* إضاءة واقعية */
+scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+let light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(2, 5, 5);
+scene.add(light);
+
+/* تحميل المحاسب */
+let loader = new THREE.GLTFLoader();
+loader.load("accountant.glb", gltf => {
+    let model = gltf.scene;
+    model.scale.set(1.4, 1.4, 1.4);
+    model.position.y = -1;
+    scene.add(model);
+
+    function animate() {
+        model.rotation.y += 0.0015; // حركة خفيفة واقعية
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+    }
+    animate();
+});
 </script>
 
 </body>
