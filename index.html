@@ -2,212 +2,218 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Accounting Interview 3D</title>
+<title>Accounting Interview Simulator</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
 body {
-    margin: 0;
-    font-family: Tahoma, Arial;
-    background: radial-gradient(#111, #000);
-    color: #fff;
+ margin:0;
+ font-family:Tahoma;
+ background:#000;
+ color:#fff;
+ overflow:hidden;
 }
-.container { max-width: 1000px; margin: auto; }
-#threeScene { height: 380px; background: #111; }
-.desk { height: 60px; background: linear-gradient(#6d4c41, #4e342e); }
-.content { padding: 20px; background: #0d0d0d; }
-.question {
-    font-size: 20px;
-    min-height: 70px;
-    border-right: 4px solid #00e5ff;
-    padding-right: 10px;
-    margin-bottom: 10px;
-}
+#three { height:38vh; }
+.desk { height:50px; background:#5d4037; }
+.panel { padding:15px; background:#111; height:62vh; overflow:auto; }
+.question { font-size:20px; border-right:4px solid #00e5ff; padding-right:10px; }
 textarea {
-    width: 100%;
-    height: 90px;
-    font-size: 16px;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
+ width:100%; height:80px; margin-top:10px;
+ border-radius:8px; border:none; padding:10px;
 }
-.buttons { display: flex; gap: 10px; margin-top: 10px; }
-button {
-    flex: 1;
-    padding: 12px;
-    font-size: 15px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
+.buttons button {
+ width:100%; margin-top:8px;
+ padding:12px; font-size:15px;
+ border:none; border-radius:8px;
 }
-.read { background: #0288d1; color: #fff; }
-.voice { background: #2e7d32; color: #fff; }
-.next { background: #6a1b9a; color: #fff; }
+.read{background:#0288d1;color:#fff}
+.voice{background:#2e7d32;color:#fff}
+.next{background:#6a1b9a;color:#fff}
+.record{background:#c62828;color:#fff}
+#timer {
+ position:absolute; top:10px; left:10px;
+ background:red; padding:8px 15px;
+ font-size:18px; border-radius:20px;
+}
+@keyframes shake {
+ 0%{transform:translateX(0)}
+ 25%{transform:translateX(5px)}
+ 50%{transform:translateX(-5px)}
+ 75%{transform:translateX(5px)}
+ 100%{transform:translateX(0)}
+}
 </style>
 </head>
 
 <body>
 
-<div class="container">
-    <div id="threeScene"></div>
-    <div class="desk"></div>
+<div id="timer">30</div>
+<div id="three"></div>
+<div class="desk"></div>
 
-    <div class="content">
-        <div class="question" id="question"></div>
-        <textarea id="answer" placeholder="اكتب إجابتك أو استخدم التسجيل الصوتي..."></textarea>
+<div class="panel">
+ <div class="question" id="q"></div>
+ <textarea id="a" placeholder="اكتب أو استخدم الصوت..."></textarea>
 
-        <div class="buttons">
-            <button class="read" onclick="playVoice()">🔊 استمع للسؤال</button>
-            <button class="voice" onclick="startVoice()">🎤 إجابة صوتية</button>
-            <button class="next" onclick="nextQuestion()">➡️ التالي</button>
-        </div>
-    </div>
+ <div class="buttons">
+  <button class="read" onclick="playQ()">🔊 السؤال</button>
+  <button class="voice" onclick="voiceIn()">🎤 إجابة صوتية</button>
+  <button class="record" onclick="startRec()">🎥 تسجيل</button>
+  <button class="next" onclick="next()">➡️ التالي</button>
+ </div>
 </div>
 
-<audio id="voice"></audio>
+<audio id="audio"></audio>
+<audio id="heart" src="audio/heartbeat.mp3" loop></audio>
 
 <script>
-/* ================= الأسئلة ================= */
-const questions = [
- {q:"عرف نفسك في دقيقة واحدة.", type:"psy"},
- {q:"كيف تتصرف تحت ضغط العمل؟", type:"psy"},
- {q:"ما أكبر نقطة ضعف لديك؟", type:"psy"},
- {q:"ما الفرق بين المصروف الرأسمالي والإيرادي؟", type:"acc"},
- {q:"كيف تعالج عدم توازن ميزان المراجعة؟", type:"acc"},
- {q:"ما تأثير الإهلاك على القوائم المالية؟", type:"acc"},
- {q:"متى يتم الاعتراف بالإيراد؟", type:"acc"},
- {q:"إذا زادت الخصوم المتداولة عن الأصول المتداولة، ماذا يعني ذلك؟", type:"iq"},
- {q:"كيف تتخذ قرارًا في ظل نقص المعلومات؟", type:"iq"}
+/* ===== الأسئلة ===== */
+const qs=[
+{t:"عرف نفسك في دقيقة.",c:"psy"},
+{t:"كيف تتصرف تحت الضغط؟",c:"psy"},
+{t:"ما الفرق بين المصروف الرأسمالي والإيرادي؟",c:"acc"},
+{t:"كيف تعالج عدم توازن ميزان المراجعة؟",c:"acc"},
+{t:"متى يتم الاعتراف بالإيراد؟",c:"acc"},
+{t:"ما تأثير الإهلاك؟",c:"acc"},
+{t:"إذا زادت الخصوم عن الأصول؟",c:"iq"},
+{t:"كيف تتخذ قرارًا مع نقص البيانات؟",c:"iq"},
+{t:"هل تفضل العمل الفردي أم الجماعي؟",c:"psy"}
 ];
 
-const keywords = {
- acc:["إيراد","مصروف","أصول","خصوم","إهلاك","ميزانية"],
- psy:["أتعامل","أتعلم","أطور","أخطط","أتحمل"],
- iq:["تحليل","قرار","بدائل","مخاطر"]
+const keys={
+ acc:["أصول","خصوم","إيراد","مصروف","إهلاك"],
+ psy:["أتعامل","أطور","أتعلم","أتحمل"],
+ iq:["تحليل","قرار","بدائل"]
 };
 
-let score = {acc:0, psy:0, iq:0};
-let index = 0;
+let i=0,score={acc:0,psy:0,iq:0};
+const q=document.getElementById("q");
+const a=document.getElementById("a");
+const audio=document.getElementById("audio");
 
-const qBox = document.getElementById("question");
-const aBox = document.getElementById("answer");
-const audio = document.getElementById("voice");
-
-function showQuestion() {
-    qBox.textContent = questions[index].q;
-    playVoice();
+/* ===== عرض السؤال ===== */
+function show(){
+ q.innerText=qs[i].t;
+ audio.src="audio/q"+(i+1)+".mp3";
+ audio.play();
+ startTimer();
 }
-showQuestion();
+show();
 
-/* ========== تشغيل الصوت + تحريك الشفاه ========== */
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const analyser = audioCtx.createAnalyser();
-const source = audioCtx.createMediaElementSource(audio);
-source.connect(analyser);
-analyser.connect(audioCtx.destination);
-analyser.fftSize = 256;
-const data = new Uint8Array(analyser.frequencyBinCount);
-
-function playVoice() {
-    audio.src = "audio/q" + (index + 1) + ".mp3";
-    audio.play();
-    audioCtx.resume();
-}
-
-function lipSync() {
-    analyser.getByteFrequencyData(data);
-    let volume = data.reduce((a,b)=>a+b) / data.length;
-    if (model) model.scale.y = 1 + volume / 2000;
-    requestAnimationFrame(lipSync);
-}
-audio.onplay = () => lipSync();
-
-/* ========== تسجيل صوت المستخدم ========== */
-function startVoice() {
-    if (!('webkitSpeechRecognition' in window)) {
-        alert("المتصفح لا يدعم التسجيل الصوتي");
-        return;
-    }
-    const rec = new webkitSpeechRecognition();
-    rec.lang = "ar-EG";
-    rec.start();
-    rec.onresult = e => aBox.value += e.results[0][0].transcript;
+/* ===== تايمر ضغط نفسي ===== */
+let tInt;
+function startTimer(){
+ let t=30;
+ clearInterval(tInt);
+ document.getElementById("heart").pause();
+ tInt=setInterval(()=>{
+  document.getElementById("timer").innerText=t;
+  if(t<10){
+   document.body.style.animation="shake .2s infinite";
+   document.getElementById("heart").play();
+  }
+  if(t--<0){clearInterval(tInt);next();}
+ },1000);
 }
 
-/* ========== التقييم ========== */
-function evaluate(answer, type) {
-    let pts = 0;
-    let words = answer.split(" ").length;
-    if (words > 5) pts += 2;
-    if (words > 15) pts += 2;
-    keywords[type].forEach(k => { if (answer.includes(k)) pts++; });
-    score[type] += pts;
+/* ===== تقييم ===== */
+function evalAns(){
+ let txt=a.value;
+ let pts=txt.split(" ").length>5?2:0;
+ keys[qs[i].c].forEach(k=>{if(txt.includes(k))pts++;});
+ score[qs[i].c]+=pts;
 }
 
-function nextQuestion() {
-    evaluate(aBox.value, questions[index].type);
-    index++;
-    if (index >= questions.length) {
-        showResult();
-        return;
-    }
-    aBox.value = "";
-    showQuestion();
+/* ===== التالي ===== */
+function next(){
+ evalAns();
+ document.body.style.animation="";
+ i++;
+ a.value="";
+ if(i>=qs.length){finish();return;}
+ show();
 }
 
-function showResult() {
-    qBox.innerHTML = `
-    ✅ انتهى الإنترفيو<br><br>
-    🧠 نفسي: ${score.psy}<br>
-    📊 محاسبة: ${score.acc}<br>
-    ⚡ ذكاء: ${score.iq}<br><br>
-    ⭐ التقييم النهائي: ${finalLevel()}
-    `;
+/* ===== النهاية ===== */
+function finish(){
+ q.innerHTML=`انتهى الإنترفيو ✅<br>
+ نفسي: ${score.psy}<br>
+ محاسبة: ${score.acc}<br>
+ ذكاء: ${score.iq}<br>
+ التقييم: ${level()}`;
+ genPDF();
 }
 
-function finalLevel() {
-    let total = score.acc + score.psy + score.iq;
-    if (total > 35) return "ممتاز جدًا";
-    if (total > 25) return "جيد جدًا";
-    if (total > 15) return "جيد";
-    return "يحتاج تطوير";
+/* ===== مستوى ===== */
+function level(){
+ let s=score.acc+score.psy+score.iq;
+ if(s>30)return"ممتاز جدًا";
+ if(s>20)return"جيد جدًا";
+ if(s>10)return"جيد";
+ return"يحتاج تطوير";
 }
 
-/* ========== Three.js 3D ========== */
-let scene = new THREE.Scene();
-scene.background = new THREE.Color(0x111111);
+/* ===== PDF ===== */
+function genPDF(){
+ const {jsPDF}=window.jspdf;
+ const d=new jsPDF();
+ d.text("Accounting Interview Certificate",20,20);
+ d.text("Psychological: "+score.psy,20,40);
+ d.text("Accounting: "+score.acc,20,50);
+ d.text("IQ: "+score.iq,20,60);
+ d.text("Final: "+level(),20,80);
+ d.save("Interview-Certificate.pdf");
+}
 
-let camera = new THREE.PerspectiveCamera(45, window.innerWidth / 380, 0.1, 100);
-camera.position.set(0, 1.6, 2.8);
+/* ===== صوت المستخدم ===== */
+function voiceIn(){
+ if(!webkitSpeechRecognition)return alert("Chrome فقط");
+ let r=new webkitSpeechRecognition();
+ r.lang="ar-EG"; r.start();
+ r.onresult=e=>a.value+=e.results[0][0].transcript;
+}
 
-let renderer = new THREE.WebGLRenderer({antialias:true});
-renderer.setSize(window.innerWidth, 380);
-document.getElementById("threeScene").appendChild(renderer.domElement);
+/* ===== تسجيل فيديو ===== */
+let rec,chunks=[];
+async function startRec(){
+ const s=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
+ rec=new MediaRecorder(s);
+ rec.ondataavailable=e=>chunks.push(e.data);
+ rec.onstop=()=>{
+  let b=new Blob(chunks,{type:"video/webm"});
+  let u=URL.createObjectURL(b);
+  let a=document.createElement("a");
+  a.href=u;a.download="interview.webm";a.click();
+ };
+ rec.start();
+ alert("تم بدء التسجيل");
+}
 
-scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-let light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(2,5,5);
-scene.add(light);
-
+/* ===== Three.js ===== */
+let scene=new THREE.Scene();
+let cam=new THREE.PerspectiveCamera(45,window.innerWidth/(window.innerHeight*.38),.1,100);
+cam.position.set(0,1.6,2.8);
+let ren=new THREE.WebGLRenderer({antialias:true});
+ren.setSize(window.innerWidth,window.innerHeight*.38);
+document.getElementById("three").appendChild(ren.domElement);
+scene.add(new THREE.AmbientLight(0xffffff,.7));
+let dl=new THREE.DirectionalLight(0xffffff,1);
+dl.position.set(2,5,5);scene.add(dl);
 let model;
-let loader = new THREE.GLTFLoader();
-loader.load("accountant.glb", gltf => {
-    model = gltf.scene;
-    model.scale.set(1.4,1.4,1.4);
-    model.position.y = -1;
-    scene.add(model);
-    animate();
+new THREE.GLTFLoader().load("accountant.glb",g=>{
+ model=g.scene;model.scale.set(1.4,1.4,1.4);
+ model.position.y=-1;scene.add(model);
+ animate();
 });
-
-function animate() {
-    requestAnimationFrame(animate);
-    if (model) model.rotation.y += 0.001;
-    renderer.render(scene, camera);
+function animate(){
+ requestAnimationFrame(animate);
+ if(model)model.rotation.y+=.001;
+ ren.render(scene,cam);
 }
 </script>
-
 </body>
 </html>
