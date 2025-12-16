@@ -2,173 +2,172 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<title>Interview Accountant</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🕋 بوصلة القبلة</title>
 
 <style>
 body {
-  margin: 0;
-  font-family: Tahoma, Arial;
-  background: radial-gradient(circle, #1c3b4a, #0f2027);
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+    margin: 0;
+    font-family: Tahoma, Arial;
+    background: linear-gradient(#eaeaea, #cfcfcf);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-.container {
-  background: rgba(255,255,255,0.1);
-  padding: 25px;
-  border-radius: 22px;
-  width: 330px;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+/* المشهد */
+.scene {
+    width: 95%;
+    max-width: 900px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    overflow: hidden;
 }
 
-h1 {
-  margin-bottom: 8px;
+/* المحاسب */
+.accountant {
+    background: #2c3e50;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+}
+.accountant img {
+    width: 140px;
+    border-radius: 50%;
+    border: 4px solid #fff;
+}
+.accountant h2 {
+    margin: 10px 0 0;
 }
 
-.compass {
-  position: relative;
-  width: 240px;
-  height: 240px;
-  border-radius: 50%;
-  border: 4px solid rgba(255,255,255,0.8);
-  margin: 25px auto;
+/* المكتب */
+.desk {
+    background: #6d4c41;
+    height: 60px;
 }
 
-.arrow {
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-left: 14px solid transparent;
-  border-right: 14px solid transparent;
-  border-bottom: 100px solid #ffd700;
-  top: 15px;
-  left: 50%;
-  transform-origin: bottom center;
-  transform: translateX(-50%) rotate(0deg);
-  transition: transform 0.1s linear;
+/* منطقة الأسئلة */
+.content {
+    padding: 20px;
 }
 
-.center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 24px;
+.question {
+    font-size: 20px;
+    margin-bottom: 15px;
+    min-height: 60px;
 }
 
+/* الإدخال */
+textarea {
+    width: 100%;
+    height: 80px;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* الأزرار */
+.buttons {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
 button {
-  background: #ffd700;
-  border: none;
-  padding: 12px 22px;
-  border-radius: 30px;
-  font-size: 16px;
-  cursor: pointer;
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
 }
-
-button:hover {
-  background: #ffcc00;
-}
-
-.info {
-  margin-top: 15px;
-  font-size: 15px;
-}
+.read { background: #3498db; color: #fff; }
+.voice { background: #27ae60; color: #fff; }
+.next { background: #8e44ad; color: #fff; }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-  <h1>🕋 بوصلة القبلة</h1>
-  <p>حرّك هاتفك لتحديد القبلة</p>
+<div class="scene">
+    <!-- المحاسب -->
+    <div class="accountant">
+        <img src="https://i.imgur.com/7kQEsHU.png" alt="Accountant">
+        <h2>المحاسب – Interview</h2>
+    </div>
 
-  <div class="compass">
-    <div class="arrow" id="arrow"></div>
-    <div class="center">🕋</div>
-  </div>
+    <!-- المكتب -->
+    <div class="desk"></div>
 
-  <button onclick="startQibla()">تشغيل البوصلة</button>
-  <div class="info" id="info"></div>
+    <!-- المحتوى -->
+    <div class="content">
+        <div class="question" id="question"></div>
+
+        <textarea id="answer" placeholder="اكتب إجابتك هنا أو استخدم التسجيل الصوتي..."></textarea>
+
+        <div class="buttons">
+            <button class="read" onclick="readQuestion()">🔊 قراءة السؤال</button>
+            <button class="voice" onclick="startVoice()">🎤 تسجيل صوتي</button>
+            <button class="next" onclick="nextQuestion()">➡️ السؤال التالي</button>
+        </div>
+    </div>
 </div>
 
 <script>
-const kaabaLat = 21.4225;
-const kaabaLon = 39.8262;
-let qiblaDirection = 0;
+const questions = [
+    "عرف نفسك في دقيقة واحدة.",
+    "كيف تتصرف تحت ضغط العمل؟",
+    "ما الفرق بين المصروف الرأسمالي والمصروف الإيرادي؟",
+    "إذا كان لديك خطأ في الميزان، كيف تكتشفه؟",
+    "ما هو معدل الذكاء المالي برأيك؟",
+    "إذا زادت الخصوم المتداولة عن الأصول المتداولة، ماذا يعني ذلك؟",
+    "اذكر موقفًا اتخذت فيه قرارًا محاسبيًا صعبًا."
+];
 
-// حساب اتجاه القبلة
-function calculateQibla(lat, lon) {
-  const lat1 = lat * Math.PI / 180;
-  const lon1 = lon * Math.PI / 180;
-  const lat2 = kaabaLat * Math.PI / 180;
-  const lon2 = kaabaLon * Math.PI / 180;
+let index = 0;
+const qBox = document.getElementById("question");
+const aBox = document.getElementById("answer");
 
-  const dLon = lon2 - lon1;
-  const y = Math.sin(dLon);
-  const x = Math.cos(lat1) * Math.tan(lat2) -
-            Math.sin(lat1) * Math.cos(dLon);
+function showQuestion() {
+    qBox.textContent = questions[index];
+}
+showQuestion();
 
-  let bearing = Math.atan2(y, x) * 180 / Math.PI;
-  return (bearing + 360) % 360;
+/* قراءة السؤال */
+function readQuestion() {
+    const utter = new SpeechSynthesisUtterance(qBox.textContent);
+    utter.lang = "ar-EG";
+    speechSynthesis.speak(utter);
 }
 
-function startQibla() {
-  if (!navigator.geolocation) {
-    alert("المتصفح لا يدعم GPS");
-    return;
-  }
+/* تحويل الصوت إلى نص */
+function startVoice() {
+    if (!('webkitSpeechRecognition' in window)) {
+        alert("المتصفح لا يدعم التسجيل الصوتي");
+        return;
+    }
 
-  navigator.geolocation.getCurrentPosition(pos => {
-    qiblaDirection = calculateQibla(
-      pos.coords.latitude,
-      pos.coords.longitude
-    );
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = "ar-EG";
+    recognition.start();
 
-    document.getElementById("info").innerHTML =
-      `اتجاه القبلة: <b>${qiblaDirection.toFixed(1)}°</b>`;
-
-    startCompass();
-  }, () => {
-    alert("يرجى السماح بتحديد الموقع");
-  });
+    recognition.onresult = function(event) {
+        aBox.value += event.results[0][0].transcript;
+    };
 }
 
-// تشغيل البوصلة الحقيقية
-function startCompass() {
-  if (typeof DeviceOrientationEvent !== "undefined" &&
-      typeof DeviceOrientationEvent.requestPermission === "function") {
-    DeviceOrientationEvent.requestPermission()
-      .then(response => {
-        if (response === "granted") {
-          window.addEventListener("deviceorientation", handleOrientation);
-        } else {
-          alert("تم رفض إذن البوصلة");
-        }
-      });
-  } else {
-    window.addEventListener("deviceorientationabsolute", handleOrientation, true);
-    window.addEventListener("deviceorientation", handleOrientation, true);
-  }
-}
-
-// تحديث السهم حسب اتجاه الهاتف
-function handleOrientation(event) {
-  let alpha = event.alpha;
-  if (alpha === null) return;
-
-  // اتجاه الشمال الحقيقي
-  let heading = 360 - alpha;
-
-  // زاوية السهم نحو القبلة
-  let rotation = qiblaDirection - heading;
-
-  document.getElementById("arrow").style.transform =
-    `translateX(-50%) rotate(${rotation}deg)`;
+/* السؤال التالي */
+function nextQuestion() {
+    index++;
+    if (index >= questions.length) {
+        alert("انتهى الإنترفيو ✅");
+        index = 0;
+    }
+    aBox.value = "";
+    showQuestion();
 }
 </script>
 
